@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>口算生成</title>
+        <style>
+            body,
+            h2 {
+                margin: 0;
+            }
+            body {
+                font-size: 14px;
+                font-family: "宋体",tahoma,arial;
+            }
+
+            h2 {
+                width: 750px;
+                height: 50px;
+                margin: 0;
+                border: 1px solid gray;
+            }
+            #ct div {
+                width: 750px;
+                height: 120px;
+                margin: 0;
+                border: 1px solid blue;
+                display: none;
+            }
+            #ct .ct {
+                display: block;
+                float: center;
+            }
+            #act div {
+                width: 750px;
+                height: 30px;
+                margin: 0;
+                border: 1px solid blue;
+                display: none;
+            }
+            #act .act {
+                display: block;
+                float: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+
+        <script>
+            function rand(m, n) {
+                if (m > n) 
+                    return 0;
+                else 
+                    return Math.round(Math.random() * (n - m) + m);
+                }
+            
+            var modes = [
+                ["mix_20", "20以内加减法"]
+            ];
+
+            var operator = ["+", "-", "*", "/"];
+
+            function generate_issue(type) {
+                var i,
+                    j;
+
+                var issue = new Object();
+
+                // default 1 operator
+
+                issue.op = new Array();
+                issue.opr = new Array();
+
+                switch (type) {
+                    case 'mix_20':
+
+                        var op = rand(0, 1);
+                        i = rand(1, 19);
+                        switch (op) {
+                            case 0:
+                                j = rand(1, 20 - i);
+                                issue.opr[0] = i;
+                                issue.op[0] = '+';
+                                issue.opr[1] = j;
+                                issue.result = issue.opr[0] + issue.opr[1];
+                                break;
+                            case 1:
+                                j = rand(1, i - 1);
+                                issue.opr[0] = i;
+                                issue.op[0] = '-';
+                                issue.opr[1] = j;
+                                issue.result = issue.opr[0] - issue.opr[1];
+                                break;
+                        }
+                        break;
+                    default:
+                        console.log("default")
+                        break;
+                }
+
+                return issue;
+            }
+            function generate() {
+
+                var issue = generate_issue("mix_20");
+                console.log(issue)
+
+                var exam = document.getElementById("exam");
+                exam.innerHTML = "<span id='examSpan' style='font-size: 74px;'>" + issue.opr[0] + issue.op[0] + issue.opr[1] + "=</span>";
+
+                var result = document.getElementById("result");
+                result.innerHTML = "<span id='resultSpan' style='font-size: 74px;'>" + issue.result + "</span>";
+
+                document
+                    .getElementById("resultSpan")
+                    .style
+                    .visibility = "hidden";
+            }
+
+            function showResult() {
+                document
+                    .getElementById("resultSpan")
+                    .style
+                    .visibility = "visible";
+            }
+            window.onload = function () {
+                generate();
+            }
+
+            $(document).keydown(function (event) {
+                if (event.keyCode == 13) {
+                    console.log('你按下了Enter');
+                    generate();
+                }
+            });
+
+            $(document).keydown(function (event) {
+                if (event.keyCode == 32) {
+                    console.log('你按下了空格');
+                    showResult();
+                }
+            });
+        </script>
+        <center>
+            <h2 id="tab">
+                <span class="tab">请计算</span>
+            </h2>
+        </center>
+
+        <div id="ct" align="center">
+            <div id="exam" class="ct"></div>
+            <div id="result" class="ct"></div>
+        </div>
+        <div id="act" align="center">
+            <div class="act" align="center">
+                <input type="button" value="重新生成" onclick="generate()"/>
+                <input type="button" value="显示答案" onclick="showResult()"/>
+            </div>
+        </div>
+    </body>
+</html>
